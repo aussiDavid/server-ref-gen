@@ -1,14 +1,21 @@
 var crypto = require('crypto');
 var http = require('http');
+var express = require('express');
 
-
-var PORT_NUMBER = 3000;
 var KEY_LENGTH = 12;
 
-var serverList = [];
 var lastServer = null;
+exports.getLastServer = function() {
+	return serverList[serverList.length-1];
+};
 
-exports.generateKey = function() {
+var serverList = [];
+exports.getServerList = function() {
+	return serverList;
+};
+
+exports.generateKey = generateKey;
+function generateKey() {
 
     var chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
     var rnd = crypto.randomBytes(KEY_LENGTH)
@@ -22,7 +29,8 @@ exports.generateKey = function() {
     return value.join('');
 };
 
-exports.createServer = function() {
+exports.createServer = createServer;
+function createServer() {
 	var server = http.createServer(function(request, response) {
 		response.writeHead(200, {"Content-Type": "text/html"});
 		response.write("<!DOCTYPE \"html\">");
@@ -37,37 +45,43 @@ exports.createServer = function() {
 		response.end();
 	});
  
-	server.listen(PORT_NUMBER++);
-
+	server.listen({
+		host: 'localhost',
+		port: 0,
+		exclusive: true
+	});
+	
+	// console.log(server);
+	// console.log(server.address());
+	
 	serverList.push(server);
 
 	lastServer = server;
 
+	
 	return server;
 };
 
-exports.close = function(server) {
-	// if(serverList.indexOf(server)) {
-		serverList.splice(serverList.indexOf(server),1);
+exports.close = close;
+function close(server) {
+	if(serverList.indexOf(server) == -1) return;
 
+	serverList.splice(serverList.indexOf(server),1);
+
+	server.close();
+};
+
+exports.closeAll = closeAll;
+function closeAll() {
+
+	if(!serverList) return;
+	if(serverList.length <= 0) return;
+
+	serverList.forEach(function(server) {
 		server.close();
-	// }
-}
-
-exports.closeAll = function() {
-
-	// for (var server in serverList){
-	// 	this.close(server)
-	// }
+	});
 
 	serverList = [];
 	lastServer = null;
-}
-
-exports.lastServer = function() {
-	return serverList[serverList.length-1];
 };
-exports.serverList = function() {
-	return serverList;
-}
-exports.PORT_NUMBER = PORT_NUMBER;
+
