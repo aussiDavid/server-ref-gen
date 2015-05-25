@@ -1,0 +1,33 @@
+{
+  "name": "server-ref-gen",
+  "version": "1.0.0",
+  "description": "Generate short term servers for automatically generated pages on your host website.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aussiDavid/server-ref-gen.git"
+  },
+  "keywords": [
+    "server",
+    "page",
+    "generator",
+    "short-term"
+  ],
+  "author": "David Milanese",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aussiDavid/server-ref-gen/issues"
+  },
+  "homepage": "https://github.com/aussiDavid/server-ref-gen",
+  "devDependencies": {
+    "expect": "^1.6.0"
+  },
+  "dependencies": {
+    "crypto": "0.0.3",
+    "http": "0.0.0"
+  }
+}
